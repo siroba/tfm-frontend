@@ -52,7 +52,7 @@
 		formData.append('file', pdfFile);
 
 		try {
-			const response = await fetch('http://localhost:8000/upload_pdf_mock', {
+			const response = await fetch('http://localhost:8000/upload', {
 				method: 'POST',
 				body: formData
 			});
@@ -73,12 +73,11 @@
 				if (done) break;
 
 				const chunk = decoder.decode(value, { stream: true });
-				console.log(chunk);
 
 				let events = chunk
-					.replaceAll('data: ', '')
+					.replaceAll('\n', '')
 					.replaceAll("'", '"')
-					.split('\n\n')
+					.split('data: ')
 					.filter((txt) => txt.trim() !== '');
 
 				events.forEach((event) => {
