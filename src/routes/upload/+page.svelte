@@ -2,18 +2,20 @@
 	import Chatbot from '$lib/components/Chatbot.svelte';
 	import ChevronBarContract from '$lib/icons/ChevronBarContract.svelte';
 	import ChevronBarExpand from '$lib/icons/ChevronBarExpand.svelte';
-	import { t } from '$lib/i18n';
+	import { lang_sub, t } from '$lib/i18n';
 	import WarningIcon from '$lib/icons/WarningIcon.svelte';
 	import UploadIcon from '$lib/icons/UploadIcon.svelte';
 
-	// Ensure Bootstrap CSS is linked in your project (e.g., in app.html or imported globally)
-	// For example, in your src/app.html:
-	//
+	let language = $state('es');
+	lang_sub.subscribe((value) => {
+		language = value.lang;
+	});
 
 	const MAX_FILE_SIZE_MB = 100;
 	const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 	let selectedFile = $state<File | null>(null);
+	let previewUrl = $state<string | null>(null);
 	let errorMessage = $state<string | null>(null);
 	let uploadResponse = $state<string | null>(null);
 	let isLoading = $state<boolean>(false);
@@ -23,6 +25,12 @@
 		const target = event.target as HTMLInputElement;
 		const file = target.files?.[0];
 
+		// Reset states
+		selectedFile = null;
+		if (previewUrl) {
+			URL.revokeObjectURL(previewUrl); // Clean up old object URL immediately
+		}
+		previewUrl = null;
 		errorMessage = null;
 		uploadResponse = null;
 
@@ -38,6 +46,7 @@
 			}
 
 			selectedFile = file;
+			previewUrl = URL.createObjectURL(file);
 		}
 	}
 
@@ -52,7 +61,12 @@
 		uploadResponse = null;
 
 		const formData = new FormData();
-		formData.append('pdfFile', selectedFile); // Key 'pdfFile' should match server-side expectation
+		formData.append('pdfFile', selectedFile);
+		formData.append('language', language);
+
+		const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+		// Simulate a delay to show loading state
+		await sleep(500);
 
 		try {
 			const response = await fetch('/api/upload', {
@@ -67,6 +81,11 @@
 			}
 
 			uploadResponse = resultText;
+
+			// const collapseElement = document.getElementById('pdf-collapse');
+			// if (collapseElement) {
+			// 	collapseElement.classList.remove('show');
+			// }
 		} catch (err) {
 			if (err instanceof Error) {
 				errorMessage = err.message;
@@ -76,12 +95,6 @@
 			console.error('Upload error:', err);
 		} finally {
 			isLoading = false;
-			collapsedPdf = true;
-
-			const collapseElement = document.getElementById('pdf-collapse');
-			if (collapseElement) {
-				collapseElement.classList.remove('show');
-			}
 		}
 	}
 
@@ -139,14 +152,19 @@
 				<div class="alert alert-danger d-flex align-items-center" role="alert">
 					<WarningIcon />
 					<div>
-						<strong>{$t('generic-error')}:</strong>
+						<strong>{$t('generic.error')}:</strong>
 						{errorMessage}
 					</div>
 				</div>
 			{:else}
 				<div class="row mt-4">
 					<div class="col-md-7">
-						{#if selectedFile}
+						{#if previewUrl}
+							<div class="preview-container">
+								<h5 class="mb-2">{$t('chatbot.preview')}</h5>
+								<embed src={previewUrl} type="application/pdf" width="100%" height="600px" />
+							</div>
+						{:else if selectedFile}
 							<div class="text-center p-5 border rounded">
 								<p class="text-muted">
 									{$t('pdf-selected')}
@@ -162,7 +180,7 @@
 					<div class="col-md-5">
 						{#if uploadResponse}
 							<div class="mt-md-0">
-								<h5 class="mb-2">{$t('server-response')} :</h5>
+								<h5 class="mb-2">{$t('server.response')} :</h5>
 								<div
 									class="alert alert-success p-3"
 									role="alert"
@@ -173,11 +191,18 @@
 										style="white-space: pre-wrap; word-wrap: break-word;">{uploadResponse}</pre>
 								</div>
 							</div>
+						{:else if isLoading}
+							<div class="text-center">
+								<div class="spinner-border" role="status">
+									<span class="visually-hidden">{$t('loading')}</span>
+								</div>
+								<p class="mt-2">{$t('loading')}</p>
+							</div>
 						{/if}
 
 						{#if selectedFile}
 							<div class="mt-4 d-grid">
-								<button class="btn btn-primary btn-lg" onclick={handleUpload}>
+								<button class="btn btn-primary btn-lg" onclick={handleUpload} disabled={isLoading}>
 									<UploadIcon />
 									{$t('chatbot.uploadPdf')}
 								</button>
@@ -204,6 +229,11 @@
 </div>
 
 <style>
+	.preview-container embed {
+		border: 1px solid #dee2e6; /* Bootstrap's default border color */
+		border-radius: 0.25rem; /* Bootstrap's default border radius */
+	}
+	/* Ensure preformatted text in success message wraps */
 	.alert pre {
 		white-space: pre-wrap;
 		word-wrap: break-word;

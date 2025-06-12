@@ -18,6 +18,11 @@ export async function POST({ request }: { request: Request }) {
 			body: JSON.stringify({
 				stream: true,
 				model: OLLAMA_MODEL,
+				temperature: 0.3,
+				top_p: 0.95,
+				top_k: 40,
+				presence_penalty: 1.5,
+				reasoning_effort: 'none',
 				messages
 			})
 		});

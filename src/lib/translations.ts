@@ -27,6 +27,7 @@ const translations: Record<Locales, Record<string, string>> = {
 		'pdf-preview-text': 'DF preview will appear here.',
 		'generic.error': 'Error',
 		'server.response': 'Server response',
+		'loading': 'Loading...',
 	},
 	es: {
 		en: 'Inglés',
@@ -53,6 +54,7 @@ const translations: Record<Locales, Record<string, string>> = {
 		'pdf-preview-text': 'La vista previa del PDF aparecerá aquí.',
 		'generic.error': 'Error',
 		'server.response': 'Respuesta del servidor',
+		'loading': 'Cargando...',
 	},
 	eu: {
 		en: 'Ingelesa',
@@ -79,6 +81,7 @@ const translations: Record<Locales, Record<string, string>> = {
 		'pdf-preview-text': 'PDF aurrebista hemen agertuko da.',
 		'generic.error': 'Errorea',
 		'server.response': 'Zerbitzariaren erantzuna',
+		'loading': 'Kargatzen...',
 	}
 };
 
