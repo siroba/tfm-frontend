@@ -1,10 +1,2 @@
-<script lang="ts">
-	import ChatStream from '$lib/components/chatStream.svelte';
-	import PdfUploader from '$lib/components/pdfUploader.svelte';
-	let sessionId: string | null = $state(null);
-</script>
-
-<PdfUploader bind:sessionId />
-{#if sessionId}
-	<ChatStream bind:sessionId />
-{/if}
+<h1>Welcome to SvelteKit</h1>
+<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
