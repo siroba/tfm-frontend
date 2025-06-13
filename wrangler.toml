@@ -1,0 +1,4 @@
+name = "tfm-frontend"
+main = "output/_worker.js"
+compatibility_date = "2025-06-13"
+compatibility_flags = ["nodejs_compat"]

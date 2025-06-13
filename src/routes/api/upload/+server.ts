@@ -1,19 +1,23 @@
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
-
+import CanvasKitInit from 'canvaskit-wasm/bin/canvaskit.js';
 // @ts-expect-error scribe does not export default
 import scribe from 'scribe.js-ocr';
 
-await scribe.init({
-	ocr: true,
-	font: true,
-	canvasKitInitOptions: {
-		// this will make CanvasKitInit look under /wasm for the .wasm file
-		locateFile: (file: string) => `/wasm/${file}`
-	}
-});
-
 export const POST: RequestHandler = async ({ request }) => {
+	const { origin } = new URL(request.url);
+
+	// CanvasKitInit is local, but will fetch the .wasm via HTTP:
+	const CanvasKit = await CanvasKitInit({
+		locateFile: (file) => `${origin}/wasm/${file}`
+	});
+
+	await scribe.init({
+		ocr: true,
+		font: true,
+		CanvasKit
+	});
+
 	try {
 		const formData = await request.formData();
 		const uploadedFile = formData.get('pdfFile');
