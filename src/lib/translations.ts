@@ -18,7 +18,7 @@ const translations: Record<Locales, Record<string, string>> = {
 		'chatbot.preview': 'Preview :',
 		'context-provider': 'Context provider',
 		'chatbot.placeholder': 'Type your question here...',
-		'chat': 'Chat',
+		chat: 'Chat',
 		'pdf-uploader': 'PDF Uploader',
 		'pdf-select': 'Select a PDF file',
 		'pdf-preview': 'to preview and upload',
@@ -27,7 +27,9 @@ const translations: Record<Locales, Record<string, string>> = {
 		'pdf-preview-text': 'DF preview will appear here.',
 		'generic.error': 'Error',
 		'server.response': 'Server response',
-		'loading': 'Loading...',
+		loading: 'Loading...',
+		'drag-pdf': 'Drag your PDF here or',
+		'max-size': 'Supports PDF files up to'
 	},
 	es: {
 		en: 'Inglés',
@@ -45,16 +47,19 @@ const translations: Record<Locales, Record<string, string>> = {
 		'chatbot.preview': 'VIsta previa :',
 		'context-provider': 'Proveedor de contexto',
 		'chatbot.placeholder': 'Escribe tu pregunta aquí...',
-		'chat': 'Chat',
+		chat: 'Chat',
 		'pdf-uploader': 'Cargador de PDF',
 		'pdf-select': 'Selecciona un archivo PDF',
 		'pdf-preview': 'para vista previa y carga',
 		'pdf-choose': 'Elige un PDF',
-		'pdf-selected': 'PDF seleccionado. Haz clic en "Subir" para continuar o selecciona otro archivo.',
+		'pdf-selected':
+			'PDF seleccionado. Haz clic en "Subir" para continuar o selecciona otro archivo.',
 		'pdf-preview-text': 'La vista previa del PDF aparecerá aquí.',
 		'generic.error': 'Error',
 		'server.response': 'Respuesta del servidor',
-		'loading': 'Cargando...',
+		loading: 'Cargando...',
+		'drag-pdf': 'Arrastra tu PDF aquí o',
+		'max-size': 'Soporta archivos PDF hasta'
 	},
 	eu: {
 		en: 'Ingelesa',
@@ -72,7 +77,7 @@ const translations: Record<Locales, Record<string, string>> = {
 		'chatbot.preview': 'Aurrebista :',
 		'context-provider': 'Testuinguru hornitzailea',
 		'chatbot.placeholder': 'Idatzi zure galdera hemen...',
-		'chat': 'Txata',
+		chat: 'Txata',
 		'pdf-uploader': 'PDF igotzailea',
 		'pdf-select': 'Hautatu PDF fitxategi bat',
 		'pdf-preview': 'aurrebista eta igoera egiteko',
@@ -81,7 +86,9 @@ const translations: Record<Locales, Record<string, string>> = {
 		'pdf-preview-text': 'PDF aurrebista hemen agertuko da.',
 		'generic.error': 'Errorea',
 		'server.response': 'Zerbitzariaren erantzuna',
-		'loading': 'Kargatzen...',
+		loading: 'Kargatzen...',
+		'drag-pdf': 'Arrastatu zure PDFa hemen edo',
+		'max-size': 'Onartutako gehienezko tamaina'
 	}
 };
 

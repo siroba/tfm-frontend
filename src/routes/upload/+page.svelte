@@ -19,7 +19,7 @@
 	let errorMessage = $state<string | null>(null);
 	let uploadResponse = $state<string | null>(null);
 	let isLoading = $state<boolean>(false);
-	let fileInputKey = $state(0); // Used to reset the file input
+	let fileInputElement: HTMLInputElement;
 
 	function handleFileChange(event: Event) {
 		const target = event.target as HTMLInputElement;
@@ -102,11 +102,11 @@
 </script>
 
 <div class="container mt-5 mb-5">
-	<div class="card shadow-sm">
-		<div class="card-header bg-light">
+	<div class="card shadow-sm glass-effect animated-slide-up mb-4 border-0">
+		<div class="gradient-header d-flex justify-content-between align-items-center rounded-top">
 			<h2 class="h4 mb-0">{$t('pdf-uploader')}</h2>
 			<button
-				class="btn btn-primary"
+				class="btn btn-light text-primary fw-bold"
 				type="button"
 				data-toggle="collapse"
 				data-target="#pdf-collapse"
@@ -131,25 +131,38 @@
 			</button>
 		</div>
 		<div class="card-body collapse show" id="pdf-collapse">
-			<p class="card-text text-muted">
+			<p class="text-muted mb-4 text-center">
 				{$t('pdf-select')} (max {MAX_FILE_SIZE_MB}MB) {$t('pdf-preview')}
 			</p>
 
-			<div class="mb-3">
-				<label for="pdfUpload" class="form-label fw-bold">{$t('pdf-choose')}</label>
-				{#key fileInputKey}
-					<input
-						type="file"
-						class="form-control"
-						id="pdfUpload"
-						accept="application/pdf"
-						onchange={handleFileChange}
-					/>
-				{/key}
-			</div>
+			<!-- Drop Zone -->
+			<div
+				class="drop-zone border border-2 border-dashed rounded-4 p-5 text-center mb-4 animated-fade-in"
+			>
+				<div class="fs-1 text-muted mb-3">
+					<div class="upload-icon-wrapper text-muted">
+						<UploadIcon />
+					</div>
+				</div>
+				<p class="fw-bold text-secondary">
+					{$t('drag-pdf')}
+					<span class="text-primary" role="button" onclick={() => fileInputElement?.click()}>
+						{$t('pdf-choose')}
+					</span>
+				</p>
+				<p class="text-muted">{$t('max-size')} {MAX_FILE_SIZE_MB}MB</p>
 
+				<input
+					bind:this={fileInputElement}
+					type="file"
+					id="pdfUpload"
+					accept="application/pdf"
+					class="d-none"
+					onchange={handleFileChange}
+				/>
+			</div>
 			{#if errorMessage}
-				<div class="alert alert-danger d-flex align-items-center" role="alert">
+				<div class="alert alert-danger d-flex align-items-center animated-fade-in" role="alert">
 					<WarningIcon />
 					<div>
 						<strong>{$t('generic.error')}:</strong>
@@ -169,11 +182,6 @@
 								<p class="text-muted">
 									{$t('pdf-selected')}
 								</p>
-							</div>
-						{:else}
-							<div class="text-center p-5 border rounded bg-light">
-								<p class="text-muted display-6">🖼️</p>
-								<p class="text-muted">{$t('pdf-preview-text')}</p>
 							</div>
 						{/if}
 					</div>
@@ -216,9 +224,9 @@
 	</div>
 
 	{#if uploadResponse}
-		<div class="card shadow-sm" style="margin-top: 3rem">
-			<div class="card-header bg-light">
-				<h2 class="h4 mb-0">{$t('chat')}</h2>
+		<div class="card shadow-lg glass-effect mt-5 border-0 animated-slide-up">
+			<div class="gradient-header rounded-top">
+				<h2 class="h5 mb-0">{$t('chat')}</h2>
 			</div>
 			<div class="card-body">
 				<Chatbot context={uploadResponse} />
@@ -247,5 +255,18 @@
 		border-bottom: 1px solid #dee2e6;
 		background-color: #f8f9fa;
 		color: #212529;
+	}
+
+	.drop-zone {
+		transition: border 0.3s ease;
+	}
+	.drop-zone:hover {
+		background-color: #f8f9fa;
+		cursor: pointer;
+	}
+
+	.upload-icon-xl {
+		width: 48px;
+		height: 48px;
 	}
 </style>
