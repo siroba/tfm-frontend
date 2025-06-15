@@ -32,7 +32,7 @@
 </main>
 
 <footer class="text-center py-4">
-	<p class="text-white-75 mb-0">Masters Project 2024 - Revolutionizing Document Interaction</p>
+	<p class="text-white-75 mb-0">Masters Project 2024 - Silvia Rodríguez Bares</p>
 </footer>
 
 <style>
