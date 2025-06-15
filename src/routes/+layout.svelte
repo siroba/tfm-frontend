@@ -9,6 +9,11 @@
 </script>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
+	<div class="d-flex align-items-center">
+		<h1 class="fw-bold fs-2 mb-0 me-2">DocuChat</h1>
+		<span class="badge bg-light bg-opacity-25 text-dark">BETA</span>
+	</div>
+
 	<select
 		class="form-select language-selection"
 		aria-label="Language selection"
@@ -20,12 +25,15 @@
 			<option value={l}>{$t(l)}</option>
 		{/each}
 	</select>
-	<h2>{$t('homepage.title')}</h2>
 </nav>
 
 <main>
 	{@render children()}
 </main>
+
+<footer class="text-center py-4">
+	<p class="text-white-75 mb-0">Masters Project 2024 - Revolutionizing Document Interaction</p>
+</footer>
 
 <style>
 	.language-selection {
