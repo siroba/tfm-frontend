@@ -31,8 +31,8 @@
 	{@render children()}
 </main>
 
-<footer class="text-center py-4">
-	<p class="text-white-75 mb-0">Masters Project 2025 - Silvia Rodríguez Bares</p>
+<footer class="custom-footer text-center py-4">
+	<p class="custom-footer-text mb-0">{$t('footer')}</p>
 </footer>
 
 <style>
@@ -66,5 +66,14 @@
 
 	h2 {
 		animation: fadeInDown 1s ease-in-out;
+	}
+
+	.custom-footer {
+		background-color: #0d6efd;
+	}
+
+	.custom-footer-text {
+		color: aliceblue;
+		font-weight: bold;
 	}
 </style>

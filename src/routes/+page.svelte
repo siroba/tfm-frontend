@@ -1,3 +1,8 @@
+<script lang="ts">
+	import '../app.scss';
+	import { t } from '$lib/i18n';
+</script>
+
 <div class="container-fluid min-vh-100 d-flex flex-column">
 	<!-- Hero Section -->
 	<main class="flex-grow-1 d-flex align-items-center">
@@ -5,18 +10,17 @@
 			<div class="row align-items-center g-5">
 				<div class="col-lg-6">
 					<div class="hero-content">
-						<h2 class="display-3 fw-bold mb-4 lh-1">Transform Your Documents Into Conversations</h2>
+						<h2 class="display-3 fw-bold mb-4 lh-1 subtitle-chocolate">
+							{$t('main-page-subtitle')}
+						</h2>
 						<p class="lead text-white-75 mb-4 fs-5">
-							Unlock the power of AI-driven document analysis. Upload any PDF and engage in
-							intelligent conversations about its content. Whether it's research papers, reports, or
-							complex documents, DocuChat makes information accessible through natural language
-							interactions. Experience the future of document intelligence.
+							{$t('main-page-text')}
 						</p>
 						<a
 							href="upload"
 							class="btn btn-light btn-lg px-4 py-3 fw-semibold text-primary d-inline-flex align-items-center shadow-lg hover-lift"
 						>
-							Start Chatting with Your Documents
+							{$t('main-page-button')}
 							<svg
 								width="20"
 								height="20"
@@ -44,10 +48,10 @@
 							</div>
 							<div class="card-body">
 								<div class="chat-bubble user-bubble bg-primary text-white p-3 rounded-3 mb-3 ms-4">
-									<small>"What are the key findings in this research?"</small>
+									<small>{$t('chat-question')}</small>
 								</div>
 								<div class="chat-bubble ai-bubble bg-light text-dark p-3 rounded-3 me-4">
-									<small>"Based on the document, there are three main findings..."</small>
+									<small>{$t('chat-answer')}</small>
 								</div>
 							</div>
 						</div>
@@ -57,3 +61,9 @@
 		</div>
 	</main>
 </div>
+
+<style>
+	.subtitle-chocolate {
+		color: chocolate;
+	}
+</style>
