@@ -8,32 +8,34 @@
 	export const lang_sub = storage<{ lang: Locales }>('lang', { lang: 'es' });
 </script>
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-	<div class="d-flex align-items-center">
-		<h1 class="fw-bold fs-2 mb-0 me-2">DocuChat</h1>
-		<span class="badge bg-light bg-opacity-25 text-dark">BETA</span>
-	</div>
+<div class="my-container">
+	<nav class="navbar navbar-expand-lg bg-body-tertiary">
+		<div class="d-flex align-items-center">
+			<h1 class="fw-bold fs-2 mb-0 me-2">DocuChat</h1>
+			<span class="badge bg-light bg-opacity-25 text-dark">BETA</span>
+		</div>
 
-	<select
-		class="form-select language-selection"
-		aria-label="Language selection"
-		bind:value={$locale}
-		onchange={() => lang_sub.update(() => ({ lang: $locale }))}
-		style="cursor: pointer;"
-	>
-		{#each locales as l (l)}
-			<option value={l}>{$t(l)}</option>
-		{/each}
-	</select>
-</nav>
+		<select
+			class="form-select language-selection"
+			aria-label="Language selection"
+			bind:value={$locale}
+			onchange={() => lang_sub.update(() => ({ lang: $locale }))}
+			style="cursor: pointer;"
+		>
+			{#each locales as l (l)}
+				<option value={l}>{$t(l)}</option>
+			{/each}
+		</select>
+	</nav>
 
-<main>
-	{@render children()}
-</main>
+	<main>
+		{@render children()}
+	</main>
 
-<footer class="custom-footer text-center py-4">
-	<p class="custom-footer-text mb-0">{$t('footer')}</p>
-</footer>
+	<footer class="custom-footer text-center py-4">
+		<p class="custom-footer-text mb-0">{$t('footer')}</p>
+	</footer>
+</div>
 
 <style>
 	.language-selection {
@@ -59,13 +61,26 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-start;
-		height: 100vh;
+		height: fit-content;
+	}
+
+	.my-container {
+		position: relative;
+		margin: 0;
+		width: 100%;
+		min-height: 100vh;
 		background-color: #f8f9fa;
 		color: #343a40;
 	}
 
 	h2 {
 		animation: fadeInDown 1s ease-in-out;
+	}
+
+	footer {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
 	}
 
 	.custom-footer {
