@@ -34,6 +34,7 @@ export async function POST({ request }: { request: Request }) {
 	}
 
 	if (!response.ok || !response.body) {
+		console.error('Failer to fecth from Ollama', response);
 		return new Response(JSON.stringify({ error: 'Failed to fetch from Ollama' }), {
 			status: 500
 		});
