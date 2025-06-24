@@ -101,7 +101,7 @@
 	let collapsedPdf = $state(true);
 </script>
 
-<div class="container mt-5 mb-5">
+<div class="container mx-0 mx-sm-2 my-5">
 	<div class="card shadow-sm glass-effect animated-slide-up mb-4 border-0">
 		<div class="gradient-header d-flex justify-content-between align-items-center rounded-top">
 			<h2 class="h4 mb-0">{$t('pdf-uploader')}</h2>
