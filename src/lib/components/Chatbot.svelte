@@ -18,6 +18,11 @@
 			role: 'system',
 			content: $t('chat.initial.systemPrompt') + context,
 			index: 0
+		},
+		{
+			role: 'assistant',
+			content: $t('chat.initial.chatMessage'),
+			index: 1
 		}
 	]);
 

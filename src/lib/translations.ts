@@ -10,6 +10,9 @@ const translations: Record<Locales, Record<string, string>> = {
 		'homepage.title': 'Home',
 		'chat.initial.systemPrompt':
 			"You are a helpful assistant specialized in public contracts here's what you know about public contracts: ",
+		'chat.initial.chatMessage':
+			'Hi! I’m DocuChat, your assistant for exploring documents. You can ask me questions about the content of the PDF or just start a conversation.',
+
 		'chatbot.input': 'Ask me anything',
 		'chatbot.send': 'Send',
 		'chatbot.uploadPdf': 'Upload PDF',
@@ -48,6 +51,8 @@ const translations: Record<Locales, Record<string, string>> = {
 		'homepage.title': 'Inicio',
 		'chat.initial.systemPrompt':
 			'Eres un asistente útil especializado en contratos públicos aquí está lo que sabes sobre contratos públicos: ',
+		'chat.initial.chatMessage':
+			'¡Hola! Soy DocuChat, tu asistente para explorar documentos. Puedes hacerme preguntas sobre el contenido del PDF o simplemente empezar una conversación.',
 		'chatbot.input': 'Pregúntame cualquier cosa',
 		'chatbot.send': 'Enviar',
 		'chatbot.uploadPdf': 'Subir PDF',
@@ -87,6 +92,8 @@ const translations: Record<Locales, Record<string, string>> = {
 		'homepage.title': 'Hasiera',
 		'chat.initial.systemPrompt':
 			'Zure litzatekeena kontratuen publikoen espezializatua da, hemen zure kontratuen publikoen erabilgarritasuna: ',
+		'chat.initial.chatMessage':
+			'Kaixo! Ni DocuChat naiz, zure dokumentu-laguntzailea. PDFaren edukiaz galdetu dezakezu edo solasaldi bat hasi besterik ez.',
 		'chatbot.input': 'Preguntatu bat',
 		'chatbot.send': 'Bidali',
 		'chatbot.uploadPdf': 'PDF bat igo',
