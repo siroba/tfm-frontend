@@ -98,7 +98,7 @@
 		}
 	}
 
-	let collapsedPdf = $state(false);
+	let collapsedPdf = $state(true);
 </script>
 
 <div class="container mt-5 mb-5">
@@ -130,7 +130,7 @@
 				{/if}
 			</button>
 		</div>
-		<div class="card-body collapse show" id="pdf-collapse">
+		<div class="card-body collapse" id="pdf-collapse">
 			<p class="text-muted mb-4 text-center">
 				{$t('pdf-select')} (max {MAX_FILE_SIZE_MB}MB) {$t('pdf-preview')}
 			</p>
@@ -223,17 +223,15 @@
 		<div class="card-footer text-muted small">{$t('context-provider')}</div>
 	</div>
 
-	{#if uploadResponse}
-		<div class="card shadow-lg glass-effect mt-5 border-0 animated-slide-up">
-			<div class="gradient-header rounded-top">
-				<h2 class="h5 mb-0">{$t('chat')}</h2>
-			</div>
-			<div class="card-body">
-				<Chatbot context={uploadResponse} />
-			</div>
-			<div class="card-footer text-muted small">{$t('context-provider')}</div>
+	<div class="card shadow-lg glass-effect mt-5 border-0 animated-slide-up">
+		<div class="gradient-header rounded-top">
+			<h2 class="h5 mb-0">{$t('chat')}</h2>
 		</div>
-	{/if}
+		<div class="card-body">
+			<Chatbot context={uploadResponse ?? ''} />
+		</div>
+		<div class="card-footer text-muted small">{$t('context-provider')}</div>
+	</div>
 </div>
 
 <style>
