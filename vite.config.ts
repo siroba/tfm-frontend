@@ -17,7 +17,7 @@ export default defineConfig({
 		}),
 		{
 			name: 'make-binary-executable',
-			buildEnd() {
+			closeBundle() {
 				const binPath = path.resolve('/var/task/.svelte-kit/output/bin/ocr'); // Adjust if needed
 				try {
 					fs.chmodSync(binPath, 0o755); // rwxr-xr-x
