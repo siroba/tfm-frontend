@@ -18,7 +18,7 @@ export default defineConfig({
 		{
 			name: 'make-binary-executable',
 			buildEnd() {
-				const binPath = path.resolve('/src/routes/api/upload/ocr'); // Adjust if needed
+				const binPath = path.resolve('src/routes/api/upload/ocr'); // Adjust if needed
 				try {
 					fs.chmodSync(binPath, 0o755); // rwxr-xr-x
 					console.log(`Set executable permissions on: ${binPath}`);
