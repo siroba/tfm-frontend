@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		console.log('__dirname:', __dirname);
 		console.log('process.cwd():', cwd);
 
-		const binaryPath = path.join(__dirname, 'ocr'); // Adjust based on actual binary location
+		const binaryPath = path.join(process.cwd(), 'ocr');
 		console.log('Resolved binaryPath:', binaryPath);
 
 		const tempFilePath = path.join(os.tmpdir(), `${randomUUID()}.pdf`);
