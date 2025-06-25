@@ -10,7 +10,7 @@ export default defineConfig({
 			targets: [
 				{
 					src: 'src/routes/api/upload/ocr',
-					dest: 'server/entries/endpoints/api/upload' // This will copy to .svelte-kit/output/server/entries/endpoints/api/upload
+					dest: 'bin' // This will copy to .svelte-kit/output/ bin
 				}
 			]
 		})
