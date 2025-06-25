@@ -5,19 +5,15 @@ import { writeFile, unlink } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import os from 'node:os';
+import { fileURLToPath } from 'url';
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const formData = await request.formData();
 		const uploadedFile = formData.get('pdfFile');
 
-		// Validate uploaded file
 		if (!(uploadedFile instanceof File)) {
 			return json({ error: 'No file uploaded or invalid form data.' }, { status: 400 });
-		}
-
-		if (uploadedFile.type !== 'application/pdf') {
-			return json({ error: 'Invalid file type. Only PDF files are accepted.' }, { status: 400 });
 		}
 
 		const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024;
@@ -28,13 +24,25 @@ export const POST: RequestHandler = async ({ request }) => {
 			);
 		}
 
-		// Save uploaded file to a temp path
+		// Log current directory info
+		const __filename = fileURLToPath(import.meta.url);
+		const __dirname = path.dirname(__filename);
+		const cwd = process.cwd();
+
+		console.log('Request received');
+		console.log('import.meta.url:', import.meta.url);
+		console.log('__dirname:', __dirname);
+		console.log('process.cwd():', cwd);
+
+		const binaryPath = path.join(__dirname, 'ocr'); // Adjust based on actual binary location
+		console.log('Resolved binaryPath:', binaryPath);
+
 		const tempFilePath = path.join(os.tmpdir(), `${randomUUID()}.pdf`);
 		await writeFile(tempFilePath, Buffer.from(await uploadedFile.arrayBuffer()));
+		console.log('Temp file written:', tempFilePath);
 
-		// Run the ./ocr binary
 		const extractedText = await new Promise<string>((resolve, reject) => {
-			const proc = spawn('./ocr');
+			const proc = spawn(binaryPath);
 
 			let output = '';
 			let errorOutput = '';
@@ -42,11 +50,16 @@ export const POST: RequestHandler = async ({ request }) => {
 			proc.stdout.on('data', (data) => (output += data.toString()));
 			proc.stderr.on('data', (data) => (errorOutput += data.toString()));
 
-			proc.on('error', reject);
+			proc.on('error', (err) => {
+				console.error('Spawn error:', err);
+				reject(err);
+			});
 
 			proc.on('close', (code) => {
-				unlink(tempFilePath).catch(() => {}); // Cleanup
-
+				console.log('Process exited with code:', code);
+				console.log('OCR output:', output);
+				console.log('OCR stderr:', errorOutput);
+				unlink(tempFilePath).catch(() => {});
 				if (code === 0) {
 					resolve(output);
 				} else {
@@ -54,18 +67,15 @@ export const POST: RequestHandler = async ({ request }) => {
 				}
 			});
 
-			// Pipe the PDF file into the process
 			import('fs').then((fs) => {
-				const readStream = fs.createReadStream(tempFilePath);
-				readStream.pipe(proc.stdin!);
+				fs.createReadStream(tempFilePath).pipe(proc.stdin!);
 			});
 		});
 
-		// Return response
 		return json(
 			{
 				text: extractedText.replaceAll('....', ''),
-				language: 'n/a', // Language not used here
+				language: 'n/a',
 				fileName: uploadedFile.name,
 				fileSize: uploadedFile.size
 			},
