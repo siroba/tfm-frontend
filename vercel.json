@@ -1,6 +1,6 @@
 {
 	"functions": {
-		"api/upload/route": {
+		"src/routes/api/upload/+server.ts": {
 			"includeFiles": "ocr"
 		}
 	}
