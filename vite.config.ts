@@ -17,8 +17,8 @@ export default defineConfig({
 		}),
 		{
 			name: 'make-binary-executable',
-			closeBundle() {
-				const binPath = path.resolve('/var/task/.svelte-kit/output/bin/ocr'); // Adjust if needed
+			buildEnd() {
+				const binPath = path.resolve('/src/routes/api/upload/ocr'); // Adjust if needed
 				try {
 					fs.chmodSync(binPath, 0o755); // rwxr-xr-x
 					console.log(`Set executable permissions on: ${binPath}`);
