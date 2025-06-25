@@ -1,0 +1,7 @@
+{
+	"functions": {
+		"api/upload/**/*": {
+			"includeFiles": [".svelte-kit/output/bin/ocr"]
+		}
+	}
+}
