@@ -41,6 +41,7 @@
 		"bootstrap": "^5.3.6",
 		"encoding": "^0.1.13",
 		"marked": "^15.0.12",
+		"rs-ocr": "^0.1.2",
 		"scribe.js-ocr": "^0.8.0"
 	}
 }

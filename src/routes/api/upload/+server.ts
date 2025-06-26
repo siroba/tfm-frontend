@@ -1,11 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { spawn } from 'node:child_process';
-import { writeFile, unlink } from 'node:fs/promises';
-import { randomUUID } from 'node:crypto';
-import path from 'node:path';
-import os from 'node:os';
-import { fileURLToPath } from 'url';
+import { ocr } from 'rs-ocr';
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
@@ -24,53 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			);
 		}
 
-		// Log current directory info
-		const __filename = fileURLToPath(import.meta.url);
-		const __dirname = path.dirname(__filename);
-		const cwd = process.cwd();
-
-		console.log('Request received');
-		console.log('import.meta.url:', import.meta.url);
-		console.log('__dirname:', __dirname);
-		console.log('process.cwd():', cwd);
-
-		const binaryPath = path.join(process.cwd(), '.svelte-kit/output/bin/ocr');
-		console.log('Resolved binaryPath:', binaryPath);
-
-		const tempFilePath = path.join(os.tmpdir(), `${randomUUID()}.pdf`);
-		await writeFile(tempFilePath, Buffer.from(await uploadedFile.arrayBuffer()));
-		console.log('Temp file written:', tempFilePath);
-
-		const extractedText = await new Promise<string>((resolve, reject) => {
-			const proc = spawn(binaryPath);
-
-			let output = '';
-			let errorOutput = '';
-
-			proc.stdout.on('data', (data) => (output += data.toString()));
-			proc.stderr.on('data', (data) => (errorOutput += data.toString()));
-
-			proc.on('error', (err) => {
-				console.error('Spawn error:', err);
-				reject(err);
-			});
-
-			proc.on('close', (code) => {
-				console.log('Process exited with code:', code);
-				console.log('OCR output:', output);
-				console.log('OCR stderr:', errorOutput);
-				unlink(tempFilePath).catch(() => {});
-				if (code === 0) {
-					resolve(output);
-				} else {
-					reject(new Error(`OCR failed with code ${code}: ${errorOutput}`));
-				}
-			});
-
-			import('fs').then((fs) => {
-				fs.createReadStream(tempFilePath).pipe(proc.stdin!);
-			});
-		});
+		const extractedText = ocr(Buffer.from(await uploadedFile.arrayBuffer()));
 
 		return json(
 			{
