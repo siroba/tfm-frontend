@@ -16,7 +16,7 @@
 		formData.append('message', message);
 
 		try {
-			const res = await fetch('http://localhost:8000/chat', {
+			const res = await fetch('http://localhost:8000/mock/chat', {
 				method: 'POST',
 				body: formData
 			});
@@ -44,6 +44,7 @@
 					.filter((txt) => txt.trim() !== '');
 
 				events.forEach((event) => {
+					console.log(event);
 					try {
 						const jsonStr = event.trim();
 						const parsed = JSON.parse(jsonStr);
