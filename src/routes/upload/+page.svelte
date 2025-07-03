@@ -32,7 +32,6 @@
 		}
 		previewUrl = null;
 		errorMessage = null;
-		uploadResponse = null;
 
 		if (file) {
 			if (file.type !== 'application/pdf') {
@@ -58,7 +57,6 @@
 
 		isLoading = true;
 		errorMessage = null;
-		uploadResponse = null;
 
 		const formData = new FormData();
 		formData.append('pdfFile', selectedFile);
@@ -80,7 +78,11 @@
 				throw new Error(resultText || `Upload failed with status: ${response.status}`);
 			}
 
-			uploadResponse = resultText;
+			if (uploadResponse) {
+				uploadResponse += '\n***Next document***\n' + resultText;
+			} else {
+				uploadResponse = resultText;
+			}
 
 			// const collapseElement = document.getElementById('pdf-collapse');
 			// if (collapseElement) {
@@ -228,7 +230,7 @@
 			<h2 class="h5 mb-0">{$t('chat')}</h2>
 		</div>
 		<div class="card-body">
-			<Chatbot context={uploadResponse ?? ''} />
+			<Chatbot bind:context={uploadResponse} />
 		</div>
 		<div class="card-footer text-muted small">{$t('context-provider')}</div>
 	</div>

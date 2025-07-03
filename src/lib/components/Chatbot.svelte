@@ -3,22 +3,26 @@
 	import { t } from '$lib/i18n';
 
 	let {
-		context,
+		context = $bindable(),
 		chatbox = $bindable()
 	}: {
-		context: string;
+		context: string | null;
 		chatbox?: HTMLDivElement;
 	} = $props();
 
 	let loadingMessage = $state(false);
 	let userMessage = $state('');
 	let partialMessage = $state('');
+
+	let llmPrompt = $derived.by(() => {
+		if (context) {
+			return $t('chat.initial.systemPrompt') + context;
+		} else {
+			return $t('chat.initial.systemPromptNoContext');
+		}
+	});
+
 	let messages: { content: string; role: string; index: number }[] = $state([
-		{
-			role: 'system',
-			content: $t('chat.initial.systemPrompt') + context,
-			index: 0
-		},
 		{
 			role: 'assistant',
 			content: $t('chat.initial.chatMessage'),
@@ -26,12 +30,23 @@
 		}
 	]);
 
+	$inspect(messages, 'messages');
+
+	let messageHistory = $derived([
+		{
+			role: 'system',
+			content: llmPrompt,
+			index: 0
+		},
+		...messages
+	]);
+
 	async function sendMessage() {
 		if (userMessage.trim() !== '') {
 			loadingMessage = true;
 			messages = [
 				...messages,
-				{ content: userMessage.trim(), role: 'user', index: messages.length }
+				{ content: userMessage.trim(), role: 'user', index: messageHistory.length }
 			];
 			userMessage = '';
 
@@ -39,7 +54,7 @@
 				const response = await fetch('/api/chat', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ messages: messages })
+					body: JSON.stringify({ messages: messageHistory })
 				});
 
 				loadingMessage = false;
@@ -69,7 +84,7 @@
 
 					messages = [
 						...messages,
-						{ content: partialMessage, role: 'assistant', index: messages.length }
+						{ content: partialMessage, role: 'assistant', index: messageHistory.length }
 					];
 					partialMessage = '';
 				} else {
