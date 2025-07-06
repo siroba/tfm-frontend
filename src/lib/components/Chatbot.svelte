@@ -4,10 +4,12 @@
 
 	let {
 		context = $bindable(),
-		chatbox = $bindable()
+		chatbox = $bindable(),
+		contextTooLong = $bindable()
 	}: {
 		context: string | null;
 		chatbox?: HTMLDivElement;
+		contextTooLong?: (response: Response) => void;
 	} = $props();
 
 	let loadingMessage = $state(false);
@@ -29,8 +31,6 @@
 			index: 1
 		}
 	]);
-
-	$inspect(messages, 'messages');
 
 	let messageHistory = $derived([
 		{
@@ -59,7 +59,21 @@
 
 				loadingMessage = false;
 
-				if (response.ok && response.body) {
+				console.log(response);
+
+				if (!response.ok) {
+					if (contextTooLong) contextTooLong(response);
+					messages = [
+						...messages,
+						{
+							content: $t('errors.contextTooLong.message'),
+							role: 'assistant',
+							index: messageHistory.length
+						}
+					];
+
+					return;
+				} else if (response.ok && response.body) {
 					const reader = response.body.getReader();
 					const decoder = new TextDecoder('utf-8');
 
@@ -71,6 +85,20 @@
 
 						try {
 							const json = JSON.parse(message);
+
+							if (json.error_type) {
+								console.error('Received error from stream:', json.error_message);
+								// 2. Set the error message and exit the loop
+								messages = [
+									...messages,
+									{
+										content: $t('errors.contextTooLong.message'), // Or use json.error_message
+										role: 'assistant',
+										index: messageHistory.length
+									}
+								];
+								return; // Exit the function entirely
+							}
 
 							partialMessage = json.finalMessage;
 

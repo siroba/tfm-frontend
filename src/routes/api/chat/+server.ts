@@ -73,6 +73,17 @@ export async function POST({ request }: { request: Request }) {
 						continue;
 					}
 
+					if (json.error_type) {
+						console.error('Streaming an error to the client:', json);
+
+						// 1. Enqueue the error object as a STRING
+						controller.enqueue(JSON.stringify(json));
+
+						// 2. Close the stream
+						controller.close();
+						return;
+					}
+
 					if (OLLAMA_URL.includes('.com')) {
 						/*
 							{

@@ -1,10 +1,14 @@
 <script lang="ts">
+	import { PUBLIC_CONTEXT_TOKEN_LIMIT } from '$env/static/public';
 	import Chatbot from '$lib/components/Chatbot.svelte';
 	import ChevronBarContract from '$lib/icons/ChevronBarContract.svelte';
 	import ChevronBarExpand from '$lib/icons/ChevronBarExpand.svelte';
 	import { lang_sub, t } from '$lib/i18n';
 	import WarningIcon from '$lib/icons/WarningIcon.svelte';
 	import UploadIcon from '$lib/icons/UploadIcon.svelte';
+	import { approximateTokens } from '$lib/tokens';
+
+	const CONTEXT_TOKEN_LIMIT: number = Number(PUBLIC_CONTEXT_TOKEN_LIMIT) || 40960;
 
 	let language = $state('es');
 	lang_sub.subscribe((value) => {
@@ -18,6 +22,7 @@
 	let previewUrl = $state<string | null>(null);
 	let errorMessage = $state<string | null>(null);
 	let uploadResponse = $state<string | null>(null);
+	let contextTooLongError = $state(false);
 	let isLoading = $state<boolean>(false);
 	let fileInputElement: HTMLInputElement;
 
@@ -43,6 +48,8 @@
 				errorMessage = `File exceeds ${MAX_FILE_SIZE_MB}MB limit. Please select a smaller file. Size: ${(file.size / (1024 * 1024)).toFixed(2)}MB`;
 				return;
 			}
+
+			contextTooLongError = approximateTokens(uploadResponse || '') > CONTEXT_TOKEN_LIMIT;
 
 			selectedFile = file;
 			previewUrl = URL.createObjectURL(file);
@@ -72,16 +79,22 @@
 				body: formData
 			});
 
-			const resultText = (await response.json()).text; // Read text regardless of status first
+			const resultText: string = (await response.json()).text; // Read text regardless of status first
 
 			if (!response.ok) {
 				throw new Error(resultText || `Upload failed with status: ${response.status}`);
 			}
 
-			if (uploadResponse) {
-				uploadResponse += '\n***Next document***\n' + resultText;
+			if (approximateTokens(resultText + (uploadResponse || '')) > CONTEXT_TOKEN_LIMIT) {
+				contextTooLongError = true;
 			} else {
-				uploadResponse = resultText;
+				contextTooLongError = false;
+
+				if (uploadResponse) {
+					uploadResponse += '\n***Next document***\n' + resultText;
+				} else {
+					uploadResponse = resultText;
+				}
 			}
 
 			// const collapseElement = document.getElementById('pdf-collapse');
@@ -101,6 +114,12 @@
 	}
 
 	let collapsedPdf = $state(true);
+
+	let contextTooLong = $state((response: Response) => {
+		console.error(response.body);
+
+		contextTooLongError = true;
+	});
 </script>
 
 <div class="container mx-0 mx-sm-2 my-5">
@@ -210,9 +229,30 @@
 							</div>
 						{/if}
 
+						{#if contextTooLongError}
+							<div
+								class="alert alert-warning d-flex align-items-center mt-4 animated-fade-in"
+								role="alert"
+							>
+								<div class="flex-shrink-0">
+									<WarningIcon />
+								</div>
+								<div class="ms-3">
+									<h5 class="alert-heading h6">{$t('errors.contextTooLong.title')}</h5>
+									<p class="mb-0">
+										{$t('errors.contextTooLong.message')}
+									</p>
+								</div>
+							</div>
+						{/if}
+
 						{#if selectedFile}
 							<div class="mt-4 d-grid">
-								<button class="btn btn-primary btn-lg" onclick={handleUpload} disabled={isLoading}>
+								<button
+									class="btn btn-primary btn-lg"
+									onclick={handleUpload}
+									disabled={isLoading || contextTooLongError}
+								>
 									<UploadIcon />
 									{$t('chatbot.uploadPdf')}
 								</button>
@@ -230,7 +270,7 @@
 			<h2 class="h5 mb-0">{$t('chat')}</h2>
 		</div>
 		<div class="card-body">
-			<Chatbot bind:context={uploadResponse} />
+			<Chatbot bind:context={uploadResponse} bind:contextTooLong />
 		</div>
 		<div class="card-footer text-muted small">{$t('context-provider')}</div>
 	</div>
